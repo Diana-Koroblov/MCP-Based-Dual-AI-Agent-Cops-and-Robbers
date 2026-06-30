@@ -1,0 +1,6 @@
+winner=cop
+moves=1
+cop_score=10
+thief_score=0
+nl_messages=2
+non_empty_messages=2

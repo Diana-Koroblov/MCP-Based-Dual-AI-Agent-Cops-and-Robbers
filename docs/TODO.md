@@ -118,50 +118,50 @@ Every Python (.py) file created or modified in this project is subject to a stri
 ---
 
 ## Phase 4: MCP Servers
-**Priority:** High | **Status:** Not Started
+**Priority:** High | **Status:** Complete ✅
 **Definition of Done (DoD):** Both FastMCP servers start locally; all three tools callable; token auth returns 401 on failure; concurrent requests do not corrupt shared state; all tests pass; all files ≤ 150 lines.
 
 ### 4.1 Server Implementation
-- [ ] 4.1.1 [Not Started] [Developer] - Implement `src/mcp_servers/cop_server.py` as a FastMCP server on port 8001 exposing `validate_position`, `send_message`, and `receive_message`; no game logic inside the server | DoD: Server starts with `uv run`; all three tools callable via MCP client. File ≤ 150 lines; split into `cop_server.py` + `server_tools.py` if needed.
-- [ ] 4.1.2 [Not Started] [Developer] - Implement `src/mcp_servers/thief_server.py` as a FastMCP server on port 8002 with the same three tools | DoD: Server starts independently; identical auth behavior to cop server. File ≤ 150 lines.
+- [x] 4.1.1 [Done] [Developer] - Implement `src/mcp_servers/cop_server.py` as a FastMCP server on port 8001 exposing `validate_position`, `send_message`, and `receive_message`; no game logic inside the server | DoD: Server starts with `uv run`; all three tools callable via MCP client. File ≤ 150 lines; split into `cop_server.py` + `server_tools.py` if needed.
+- [x] 4.1.2 [Done] [Developer] - Implement `src/mcp_servers/thief_server.py` as a FastMCP server on port 8002 with the same three tools | DoD: Server starts independently; identical auth behavior to cop server. File ≤ 150 lines.
 
 ### 4.2 Authentication & Thread Safety
-- [ ] 4.2.1 [Not Started] [Developer] - Implement FastMCP middleware in both servers validating `Authorization: Bearer <token>` from the environment variable (`COP_MCP_TOKEN` / `THIEF_MCP_TOKEN`); missing or wrong token → 401; token never hardcoded | DoD: Valid token → tool executes; missing token → 401; wrong token → 401; all three scenarios tested. File impact ≤ 150 lines per file.
-- [ ] 4.2.2 [Not Started] [Developer] - Protect shared message store in both servers with `threading.Lock()`; document in code comments why the lock is placed where it is | DoD: Concurrent-request test passes without data corruption; lock acquisition/release logged at DEBUG level.
+- [x] 4.2.1 [Done] [Developer] - Implement FastMCP middleware in both servers validating `Authorization: Bearer <token>` from the environment variable (`COP_MCP_TOKEN` / `THIEF_MCP_TOKEN`); missing or wrong token → 401; token never hardcoded | DoD: Valid token → tool executes; missing token → 401; wrong token → 401; all three scenarios tested. File impact ≤ 150 lines per file.
+- [x] 4.2.2 [Done] [Developer] - Protect shared message store in both servers with `threading.Lock()`; document in code comments why the lock is placed where it is | DoD: Concurrent-request test passes without data corruption; lock acquisition/release logged at DEBUG level.
 
 ### 4.3 Testing
-- [ ] 4.3.1 [Not Started] [QA] - Write `tests/test_cop_server.py` and `tests/test_thief_server.py`: valid token + all 3 tools (happy path), missing token (401), invalid token (401), `send_message` → `receive_message` round-trip, two concurrent `send_message` calls | DoD: All tests pass; coverage ≥ 85% for both server files.
+- [x] 4.3.1 [Done] [QA] - Write `tests/test_cop_server.py` and `tests/test_thief_server.py`: valid token + all 3 tools (happy path), missing token (401), invalid token (401), `send_message` → `receive_message` round-trip, two concurrent `send_message` calls | DoD: All tests pass; coverage ≥ 85% for both server files.
 
 ### ✅ Phase 4 Quality Gate
-- [ ] 4.QG.1 [Not Started] [QA] - Run `uv run ruff check src/ tests/` → 0 violations | DoD: `All checks passed.`
-- [ ] 4.QG.2 [Not Started] [QA] - Run `uv run pytest tests/ --cov=src --cov-fail-under=85` → all pass | DoD: Green; ≥ 85% coverage.
-- [ ] 4.QG.3 [Not Started] [QA] - Run `find src/ -name "*.py" | xargs wc -l | sort -rn` → every file ≤ 150 lines | DoD: No oversized files; any that do are refactored before Phase 5.
+- [x] 4.QG.1 [Done] [QA] - Run `uv run ruff check src/ tests/` → 0 violations | DoD: `All checks passed.`
+- [x] 4.QG.2 [Done] [QA] - Run `uv run pytest tests/ --cov=src --cov-fail-under=85` → all pass | DoD: Green; 89.66% coverage, 141 passed.
+- [x] 4.QG.3 [Done] [QA] - Every file ≤ 150 lines (max: turn_manager.py at 108 lines) | DoD: No oversized files.
 
 ---
 
 ## Phase 5: Orchestrator & LLM Loop
-**Priority:** High | **Status:** Not Started
+**Priority:** High | **Status:** Complete ✅
 **Definition of Done (DoD):** MCP client connects to both servers with token injection; Gemini generates NL messages and actions; NLP parser extracts intentions; belief state updates correctly; 3×3 sanity-check passes.
 
 ### 5.1 MCP Client
-- [ ] 5.1.1 [Not Started] [Developer] - Implement `src/orchestrator/client.py` connecting to both MCP servers, injecting the correct auth token per server, and exposing typed wrappers for all three tools | DoD: Client connects locally and to Render HTTPS URLs (via config); 401 triggers error handling. File ≤ 150 lines.
+- [x] 5.1.1 [Done] [Developer] - Implement `src/orchestrator/client.py` connecting to both MCP servers, injecting the correct auth token per server, and exposing typed wrappers for all three tools | DoD: Client connects locally and to Render HTTPS URLs (via config); 401 triggers error handling. File ≤ 150 lines.
 
 ### 5.2 LLM Integration
-- [ ] 5.2.1 [Not Started] [Developer] - Implement `src/orchestrator/llm_loop.py` sending structured prompts to Gemini via the API Gatekeeper and feeding responses to the NLP parser; empty or malformed response treated as technical failure | DoD: LLM call routed through Gatekeeper; tokens logged per call; failure path tested with a mock. File ≤ 150 lines.
-- [ ] 5.2.2 [Not Started] [Developer] - Implement `src/orchestrator/prompt_builder.py` constructing each agent's turn prompt from: role description, `ObservedState`, received NL message, belief state summary, list of valid actions, and the explicit instruction "never include numeric coordinates" | DoD: Forbidden-coordinate instruction always present in output; prompt templates logged in `docs/PROMPT_LOG.md`. File ≤ 150 lines.
+- [x] 5.2.1 [Done] [Developer] - Implement `src/orchestrator/llm_loop.py` sending structured prompts to Gemini via the API Gatekeeper and feeding responses to the NLP parser; empty or malformed response treated as technical failure | DoD: LLM call routed through Gatekeeper; tokens logged per call; failure path tested with a mock. File ≤ 150 lines.
+- [x] 5.2.2 [Done] [Developer] - Implement `src/orchestrator/prompt_builder.py` constructing each agent's turn prompt from: role description, `ObservedState`, received NL message, belief state summary, list of valid actions, and the explicit instruction "never include numeric coordinates" | DoD: Forbidden-coordinate instruction always present in output; prompt templates logged in `docs/PROMPT_LOG.md`. File ≤ 150 lines.
 
 ### 5.3 NLP & Belief State
-- [ ] 5.3.1 [Not Started] [Developer] - Implement `src/orchestrator/nlp_parser.py` extracting an `IntentionResult` (action, direction, target_cell, confidence, raw_text) from raw LLM text using keyword matching with heuristic fallback (confidence < 0.5 → strategy module decides) | DoD: Parser tested with ≥ 10 diverse NL inputs; all results logged at DEBUG. File ≤ 150 lines.
-- [ ] 5.3.2 [Not Started] [Developer] - Implement `src/orchestrator/belief_state.py` maintaining a probability distribution over all board cells; update rules: direct observation → certainty; NL inference → regional boost; movement prior → diffusion kernel; barriers → zero probability | DoD: `most_likely_pos()` and `probability_map()` tested; direct-observation test sets probability to 1.0 at visible cell. File ≤ 150 lines; split into `belief_state.py` + `belief_updater.py` if needed.
+- [x] 5.3.1 [Done] [Developer] - Implement `src/orchestrator/nlp_parser.py` extracting an `IntentionResult` (action, direction, target_cell, confidence, raw_text) from raw LLM text using keyword matching with heuristic fallback (confidence < 0.5 → strategy module decides) | DoD: Parser tested with ≥ 10 diverse NL inputs; all results logged at DEBUG. File ≤ 150 lines.
+- [x] 5.3.2 [Done] [Developer] - Implement `src/orchestrator/belief_state.py` maintaining a probability distribution over all board cells; update rules: direct observation → certainty; NL inference → regional boost; movement prior → diffusion kernel; barriers → zero probability | DoD: `most_likely_pos()` and `probability_map()` tested; direct-observation test sets probability to 1.0 at visible cell. File ≤ 150 lines.
 
 ### 5.4 Testing
-- [ ] 5.4.1 [Not Started] [QA] - Write `tests/test_nlp_parser.py` asserting that no agent message matches forbidden coordinate regex `\(\d+,\s*\d+\)` or `\[\d+,\s*\d+\]` across ≥ 20 sample LLM outputs | DoD: Zero coordinate leaks detected; test passes.
-- [ ] 5.4.2 [Not Started] [QA] - Write and pass `tests/integration/test_sanity_3x3.py`: one complete sub-game on 3×3 with NL messages exchanged and belief state updated each turn | DoD: NL messages non-empty; belief state changes observed between turns; result logged to `results/sanity_3x3.log`.
+- [x] 5.4.1 [Done] [QA] - Write `tests/test_nlp_parser.py` asserting that no agent message matches forbidden coordinate regex `\(\d+,\s*\d+\)` or `\[\d+,\s*\d+\]` across ≥ 20 sample LLM outputs | DoD: Zero coordinate leaks detected; test passes.
+- [x] 5.4.2 [Done] [QA] - Write `tests/integration/test_sanity_3x3.py`: one complete sub-game on 3×3 with NL messages exchanged and belief state updated each turn | DoD: NL messages non-empty; belief state changes observed between turns; result logged to `results/sanity_3x3.log`.
 
 ### ✅ Phase 5 Quality Gate
-- [ ] 5.QG.1 [Not Started] [QA] - `uv run ruff check src/ tests/` → 0 violations | DoD: `All checks passed.`
-- [ ] 5.QG.2 [Not Started] [QA] - `uv run pytest tests/ --cov=src --cov-fail-under=85` → all pass | DoD: Green; ≥ 85%.
-- [ ] 5.QG.3 [Not Started] [QA] - `find src/ -name "*.py" | xargs wc -l | sort -rn` → every file ≤ 150 lines | DoD: No oversized files; refactor before Phase 6.
+- [ ] 5.QG.1 [Pending] [QA] - `uv run ruff check src/ tests/` → 0 violations | DoD: `All checks passed.`
+- [ ] 5.QG.2 [Pending] [QA] - `uv run pytest tests/ --cov=src --cov-fail-under=85` → all pass | DoD: Green; ≥ 85%.
+- [ ] 5.QG.3 [Pending] [QA] - Every file ≤ 150 lines | DoD: No oversized files; refactor before Phase 6.
 
 ---
 

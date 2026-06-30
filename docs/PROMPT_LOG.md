@@ -135,3 +135,51 @@ MESSAGE: Keep looking to the east — I promise I'm nowhere near where you think
 **Lessons learned:**
 - Role-specific valid-moves lists (no PLACE_BARRIER for Thief) prevent action-type confusion.
 - The deception instruction ("you may bluff") produces richer NL messages and makes the game more interesting.
+
+---
+
+## PromptBuilder Template (Phase 5 implementation)
+
+The following documents the exact structure produced by
+`src/orchestrator/prompt_builder.PromptBuilder.build()`.
+
+```
+[ROLE SECTION]
+You are the COP/THIEF in a grid pursuit game.
+<Goal description>. The board is <rows> rows × <cols> columns.
+
+[STATE SECTION]
+Current state:
+  • Turn: <N>
+  • Your position: column <x>, row <y>
+  • Barriers on board: <count>
+  • Barriers you may still place: <count>   ← cop only, when > 0
+  • Opponent VISIBLE at column <x>, row <y> ← when visible
+  • Opponent NOT visible (fog of war).      ← when hidden
+
+[MESSAGE SECTION]                           ← omitted if no prior message
+Message from opponent: "<text>"
+
+[BELIEF SECTION]
+Your belief about the opponent's location: Most likely at column <x>,
+row <y> (confidence <N>%)
+
+[ACTIONS SECTION]
+Valid actions this turn: N, NE, E, SE, S, SW, W, NW[, place_barrier]
+
+[COORDINATE RESTRICTION — ALWAYS PRESENT]
+CRITICAL: Never include numeric coordinates such as (x,y) or [x,y] in
+your response. Describe positions using compass directions (N, S, E, W,
+NE, NW, SE, SW) and relative terms (ahead, behind, left, right, far, close).
+
+[OUTPUT FORMAT]
+Respond with exactly two lines:
+ACTION: <one of the valid actions listed above>
+MESSAGE: <a short tactical message for your opponent (no coordinates)>
+```
+
+**Design decisions:**
+- Belief summary replaces raw probability map — human-readable and avoids coordinate temptation.
+- Opponent message quoted with typographic quotes to prevent prompt injection.
+- Valid actions listed explicitly so the agent cannot hallucinate illegal moves.
+- Coordinate restriction appears in every prompt regardless of role.

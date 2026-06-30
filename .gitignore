@@ -1,0 +1,38 @@
+# Environment & secrets
+.env
+*.key
+*.pem
+token.json
+my_google.json
+**/private_google/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+
+# uv
+.uv/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

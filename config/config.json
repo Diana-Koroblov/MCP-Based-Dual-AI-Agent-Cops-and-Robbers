@@ -1,0 +1,30 @@
+{
+  "version": "1.00",
+  "student_id": "YOUR_STUDENT_ID",
+  "grid_size": [
+    5,
+    5
+  ],
+  "max_moves": 25,
+  "num_games": 6,
+  "max_barriers": 5,
+  "visibility_radius": 2,
+  "llm_provider": "gemini",
+  "llm_model": "gemini-1.5-flash",
+  "cop_server_url": "http://localhost:8001",
+  "thief_server_url": "http://localhost:8002",
+  "scoring": {
+    "cop_capture_points": 10,
+    "thief_survival_points": 10,
+    "cop_per_barrier_points": 1,
+    "thief_per_move_survived_points": 0
+  },
+  "cop_start": [
+    0,
+    0
+  ],
+  "thief_start": [
+    4,
+    4
+  ]
+}

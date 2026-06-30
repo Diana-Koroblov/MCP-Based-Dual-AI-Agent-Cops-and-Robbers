@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cops-and-robbers-mcp"
+version = "1.0.0"
+description = "Dual AI agent Cops-and-Robbers pursuit game via MCP servers (Dec-POMDP)"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0",
+    "google-generativeai>=0.8",
+    "pygame>=2.6",
+    "python-dotenv>=1.0",
+    "google-auth>=2.35",
+    "google-auth-oauthlib>=1.2",
+    "google-api-python-client>=2.150",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "--tb=short"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

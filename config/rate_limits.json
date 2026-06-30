@@ -1,0 +1,10 @@
+{
+  "version": "1.00",
+  "requests_per_minute": 15,
+  "max_queue_depth": 30,
+  "retry_delay_seconds": 4,
+  "max_retries": 3,
+  "backpressure_block_timeout_seconds": 10,
+  "gemini_cost_per_1k_input_tokens_usd": 0.000075,
+  "gemini_cost_per_1k_output_tokens_usd": 0.0003
+}
